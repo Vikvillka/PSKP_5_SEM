@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lab 7</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
+</head>
+<body>
+    <h2>Скрипт: <span 
+        id="result"></span></h2>
+    <script>
+        result.innerHTML = sum(30, 22);
+    </script>
+    <h2>Документ:</h2>
+    <a href="./document.docx" download>Скачать документ</a></br>
+
+    <h2>json:</h2>
+    <div id="json-data"></div>
+    <h2>XML:</h2>
+    <div id="xml-data"></div>
+
+    <h2>Img:</h2>
+    <img width="300" height="300" src="./image.png" alt="Image"></br>
+
+    <h2>Video:</h2>
+    <video width="300" height="300" controls>
+        <source src="./video.mp4" type="video/mp4">
+    </video></br>
+
+    <script>
+        fetch('./data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('json-data').innerText = JSON.stringify(data, null, 2);
+            });
+
+        fetch('./data.xml')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('xml-data').innerText = data;
+            });
+    </script>
+</body>
+</html>

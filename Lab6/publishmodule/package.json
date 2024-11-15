@@ -1,0 +1,12 @@
+{
+    "name": "m0603-vika",
+    "version": "1.0.0",
+    "description": "Модуль для отправки email сообщений.",
+    "main": "m0603.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": ["email", "sendmail", "npm"],
+    "author": "vika",
+    "license": "ISC"
+  }

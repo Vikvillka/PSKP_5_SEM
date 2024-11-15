@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "m0603-vika": "^1.0.0",
+    "m0603-vikvika": "^1.0.0",
+    "sendmail": "^1.6.1",
+    "with_module_0603": "^1.0.0"
+  }
+}

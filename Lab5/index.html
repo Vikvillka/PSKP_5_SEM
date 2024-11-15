@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 5px;
+        }
+        #get_result{
+            width: 200px;
+           
+        }
+        button{
+            background: rgb(133, 213, 133);
+            border: none;
+            width: 100px;
+            height: 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            box-shadow:  2px 2px 5px rgba(0, 0, 0, 0.2); /* Внутренняя тень */
+        }
+        button:hover{
+            background: rgb(94, 185, 94);
+        }
+        label{
+            font-size: 18px;
+            font-weight: bold;
+        }
+        input {
+            width: 250px;
+            height: 25px;
+            padding:  0 10px;
+            border-radius: 5px;
+            border: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Внутренняя тень */
+        }
+        .main{
+            display: flex;
+        }
+        .result{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+        }
+        #get_result{
+            min-height: 100px;
+            width: 240px;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2); /* Внутренняя тень */
+        }
+        #error{
+            color: red;
+            font-size: 18px;
+            height: 20px;
+        }
+        .input{
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="main">
+    <div class="result">
+        <div id = "error"> </div>
+        <div id="get_result"></div>
+        <div class="get">
+            <button onclick="GET()">Get</button>
+        </div>
+    </div>
+    <div class="container">
+        <div>
+            <div class="input">
+                <label for="id">ID</label>
+                <input type="number"  placeholder="Ведите id" id = "id" min="0" >
+            </div>
+        </br>
+            <div class="input">
+                <label for="name">Name</label>
+                <input type="text" placeholder="Ведите имя" id = "fio">
+            </div>
+        </br>
+
+        <div class="input">
+            <label for="bdate">Bdate</label>
+            <input type="date" id = "bdate">
+        </div>
+
+        </br>
+        </div>
+        <div>
+        <button onclick="Post()">Insert</button>
+        <button onclick="Update()">Update</button>
+        <button onclick="Delete()">Delete</button>
+        </div>
+    </div>
+</div>
+    <script>
+
+function GET(){
+    console.log('GET');
+    fetch('http://localhost:5000/api/db',{
+            method: 'GET',
+            headers:{'Content-Type':'application/json', 'Accept':'application/json'}
+        }
+    )
+    .then(response =>{
+        return response.json();
+    })
+    .then(data => {
+        get_result.innerHTML = "";
+        data.forEach(c=> get_result.innerHTML += `${c.id} ${c.name} ${c.bdate}<br/>`)
+    })
+}
+
+function Post(){
+    console.log('POST');
+    fetch('http://localhost:5000/api/db',{
+        method: 'POST',
+        headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+        body: JSON.stringify({id: id.value, name: fio.value, bdate: bdate.value })
+    }
+    )
+    .then(response => {return response.json();})
+    .then((pdata)=> {
+        if(pdata.error){
+            error.innerHTML = pdata.error;
+        }
+        console.log('POST.pdata', pdata);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function Update() {
+    console.log('PUT');
+    fetch('http://localhost:5000/api/db', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: id.value, name: fio.value, bdate: bdate.value  })
+    })
+    .then(response => { return response.json(); })
+    .then(pdata => {
+        console.log('PUT.pdata', pdata);
+        if (pdata.error) {
+            error.innerHTML = pdata.error;  
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function Delete() {
+    console.log('DELETE');
+    fetch(`http://localhost:5000/api/db?id=${id.value}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        
+    })
+    .then(response => { return response.json(); })
+    .then(pdata => {
+        console.log('DELETE.pdata', pdata);
+        if (pdata.error) {
+            error.innerHTML = pdata.error; 
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+    </script>
+</body>
+</html>

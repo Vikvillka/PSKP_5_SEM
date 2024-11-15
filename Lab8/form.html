@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 7</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <form action="/formparameter" method="POST">
+        <div class="row">
+            <label for="inputText">Type-Text</label>
+            <input type="text" id="inputText" name="inputText" required>
+        </div>
+
+        <div class="row">
+            <label for="inputNumber">Number</label>
+            <input type="number" id="inputNumber" name="inputNumber" required>
+        </div>
+
+        <div class="row">
+            <label for="inputDate">Date</label>
+            <input type="date" id="inputDate" name="inputDate" required>
+        </div>
+
+        <div class="row">
+            <label>Checkbox</label>
+            <input type="checkbox" value="inputCheck1" id="inputCheck1" name="inputCheck" class="checks">
+            <label for="inputCheck1">Check 1</label>
+            <input type="checkbox" value="inputCheck2" id="inputCheck2" name="inputCheck" class="checks">
+            <label for="inputCheck2">Check 2</label>
+        </div>
+
+        <div class="row">
+            <label>Radiobutton</label>
+            <input type="radio" value="inputRadio1" id="inputRadio1" name="inputRadio" class="radios">
+            <label for="inputRadio1">Radio 1</label>
+            <input type="radio" value="inputRadio2" id="inputRadio2" name="inputRadio" class="radios">
+            <label for="inputRadio2">Radio 2</label>
+        </div>
+
+        <div class="row">
+            <label for="inpTextArea">Textarea</label>
+            <textarea id="inputTextarea" name="inputTextArea" required></textarea>
+        </div>
+
+        <div class="row">
+            <input type="submit" name="inputSubmitForm" value="Send">
+            <!-- <input type="submit" name="inputSubmitForm" value="Send 2"> -->
+        </div>
+    </form>
+</body>
+</html>
