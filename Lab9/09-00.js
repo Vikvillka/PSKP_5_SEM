@@ -82,7 +82,7 @@ http.createServer((req, res) => {
             break;
         }
         case "/6":
-         form.on('field', (name, field) => {
+            form.on('field', (name, field) => {
               console.log(field);
               result += `'${name}' = ${field}`;
             });
@@ -110,8 +110,6 @@ http.createServer((req, res) => {
             form.parse(req);
             break;
         case "/7":
-            let result = '';
-            
             form.on('field', (name, field) => {
               console.log(field);
               result += `'${name}' = ${field}`;
@@ -147,4 +145,4 @@ http.createServer((req, res) => {
             res.end(file);
             break;
     }
-}).listen(5000, () => console.log('Сервер начал прослушивание запросов на порту 5000'));
+}).listen(5000, () => console.log('http://localhost:5000'));
