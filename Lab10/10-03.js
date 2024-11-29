@@ -1,11 +1,11 @@
 const WebSocket = require('ws');
 
-const wsserver = new WebSocket.Server({port: 4000, host: 'localhost', path: '/wsserver'})
+const wss = new WebSocket.Server({port: 4000, host: 'localhost', path: '/broadcast'})
 
-wsserver.on('connection', ws =>{
+wss.on('connection', ws =>{
     console.log('Connection to webSocket server')
     ws.on('message', message =>{
-      wsserver.clients.forEach(client => {
+      wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN){
             client.send('server: ' + message)
         }
@@ -16,7 +16,7 @@ wsserver.on('connection', ws =>{
     })
 })
 
-wsserver.on('error', (e) =>{
+wss.on('error', (e) =>{
     console.log('ws server error', e)
 })
 

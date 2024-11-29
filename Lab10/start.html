@@ -13,7 +13,7 @@
 
         socket.onopen = () =>{
             console.log('socket open')
-            sendingInterval = setInterval(() => socket.send(`08-01-client: ${++n}`), 3000)
+            sendingInterval = setInterval(() => socket.send(`10-01-client: ${++n}`), 3000)
         }
 
         socket.onclose = (e) => console.log('socket close')
@@ -29,7 +29,7 @@
     }
 </script>
 <body>
-    <h1>08-01</h1>
+    <h1>10-01</h1>
     <button type="button" onclick="startWS()">startWS</button>
     <div id="content"></div>
 </body>
