@@ -40,47 +40,91 @@ let server = http.createServer((req, res) => {
             res.end(JSON.stringify(students));
             return;
         }
-        
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(students));
-    } else if (method === 'GET' && /^\/\d+$/.test(path.pathname)) {
-        let id = parseInt(path.pathname.split('/')[1]);
-        let students = loadStudents();
-        if (students.error) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(students));
+    
+        let page = parseInt(path.query.page) || 1; 
+        let limit = parseInt(path.query.limit) || 2; 
+    
+        if (page <= 0 || limit <= 0) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                error: 5,
+                message: 'Параметры page и limit должны быть положительными числами'
+            }));
             return;
         }
-        let student = students.find(s => s.id === id);
-        if (student) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(student));
-        } else {
+    
+        let startIndex = (page - 1) * limit;
+        let endIndex = startIndex + limit;
+        let paginatedStudents = students.slice(startIndex, endIndex);
+    
+        if (paginatedStudents.length === 0 && students.length > 0) {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
-                                        error: 2,
-                                        message: `студент с id ${id} не найден`
-                                    }));
+                error: 6,
+                message: `Страница ${page} за пределами доступного диапазона`
+            }));
+            return;
         }
-    } else if (method === 'POST' && path.pathname === '/') {
+    
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            page,
+            limit,
+            total: students.length,
+            data: paginatedStudents
+        }));
+    }
+     else if (method === 'POST' && path.pathname === '/') {
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
         });
         req.on('end', () => {
-            let newStudent = JSON.parse(body);
+            // Проверка на пустое тело запроса
+            if (!body) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    error: 1,
+                    message: 'Тело запроса не должно быть пустым' 
+                }));
+                return;
+            }
+    
+            let newStudent;
+            try {
+                newStudent = JSON.parse(body);
+            } catch (e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    error: 2,
+                    message: 'Недопустимый JSON' 
+                }));
+                return;
+            }
+    
+            // Проверка на обязательные поля (например, id и name)
+            if (!newStudent.id || !newStudent.name) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ 
+                    error: 3,
+                    message: 'Недостаточно данных: id и name обязательны' 
+                }));
+                return;
+            }
+    
             let students = loadStudents();
             if (students.error) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(students));
                 return;
             }
+    
             if (students.some(s => s.id === newStudent.id)) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ 
-                                            error: 3,
-                                            message: `студент с id ${newStudent.id} уже существует`
-                                        }));
+                    error: 4,
+                    message: `Студент с id ${newStudent.id} уже существует` 
+                }));
             } else {
                 students.push(newStudent);
                 saveStudents(students);
@@ -89,6 +133,7 @@ let server = http.createServer((req, res) => {
                 res.end(JSON.stringify(newStudent));
             }
         });
+    
     } else if (method === 'PUT' && path.pathname === '/') {
         console.log('put');
         let body = '';
@@ -111,7 +156,6 @@ let server = http.createServer((req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(updatedStudent));
             } else {
-                console.log('dfgh');
                 res.writeHead(404, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                                             error: 2,
@@ -132,8 +176,8 @@ let server = http.createServer((req, res) => {
             let deletedStudent = students.splice(index, 1)[0];
             saveStudents(students);
             notifyAll();
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(deletedStudent));
+            res.writeHead(204, { 'Content-Type': 'application/json' });
+            res.end();
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
@@ -188,7 +232,7 @@ let server = http.createServer((req, res) => {
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({    error: 4, 
-                                    message: 'there are no suitable queries' 
+                                    message: 'Недопустимая точка запроса' 
                                 }));
     }
 });
